@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: Java-WebSocket-Server
+  thymeleaf:
+    cache: false
+
+server:
+  port: 8090

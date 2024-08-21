@@ -1,0 +1,129 @@
+<!DOCTYPE HTML>
+<!--
+	Dimension by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Key Generate</title>
+		<link rel="shortcut icon" href="/images/logo.ico">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
+		<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+	</head>
+	<body class="is-preload">
+			<div id="wrapper">
+				<header id="header">
+					<div style="text-align: left; background-color: black; position: relative; opacity: 0.7; padding: 40px; border-radius: 21px">
+						<div style="width: 100%; height: 40px">
+							<a th:href="@{/}" style="position: absolute; right: 4.5%; top: 2%; font-size: 32px">X</a>
+						</div>
+						<h2 class="major"><strong>密钥生成</strong></h2>
+
+						<blockquote>
+						通过WebSocket服务器对消息进行转发，点击生成按钮将默认发给服务器字符串"key generate"<br><br>服务器在本地执行 ./test 程序后以字符串形式返回其执行结果<br><br>注意这里这里前端与 WS 通信的方式（非 GET/POST），本页面的 JS 有示例和注释
+						</blockquote>
+						<div id="message"></div><br>
+						<section>
+							<div class="fields">
+								<div class="field">
+									<label>Message</label>
+								</div>
+							</div><br>
+							<ul class="actions">
+								<li><button onclick="send()" class="primary">Generate</button></li>
+								<li><button onclick="closeWebSocket()">Close Connection</button></li>
+							</ul>
+						</section>
+					</div>
+				</header>
+
+				<!-- Footer -->
+				<footer id="footer">
+					<p class="copyright">&copy; Designed by: <a href="https://github.com/Northboat">NorthBoat</a><br>
+				</footer>
+
+			</div>
+
+			<!-- BG -->
+			<img id="bg" style="opacity: 0.7;" src="/images/manjaro.png" alt="#">
+
+			<!-- Scripts -->
+			<script src="/assets/js/jquery.min.js"></script>
+			<script src="/assets/js/browser.min.js"></script>
+			<script src="/assets/js/breakpoints.min.js"></script>
+			<script src="/assets/js/util.js"></script>
+			<script src="/assets/js/main.js"></script>
+
+			<script>
+				// 连接 websocket 服务器
+				let websocket = null;
+
+				let user = sessionStorage.getItem("user")
+				if(user == null){
+					user = "Passerby"
+				}
+
+				if('WebSocket' in window) {	//判断当前浏览器是否支持WebSocket
+					// 建立 websocket 连接
+					// 改成你的地址 http，后端 java 端口默认 8090
+					// 这里的 test 字段可以随意更换，只要是 chat/*，后端 websocket server 都将建立信道并通过该信道返回信息
+					websocket = new WebSocket("ws://localhost:8090/chat/test");
+				} else {
+					alert('当前浏览器 Not support websocket')
+				}
+
+
+				//连接发生错误的回调方法
+				websocket.onerror = function() {
+					setMessageInnerHTML("WebSocket 连接发生错误");
+					throw SyntaxError();
+				};
+
+				//连接成功建立的回调方法
+				websocket.onopen = function() {
+					setMessageInnerHTML("WebSocket 连接成功");
+				}
+
+				// let U01data, Uidata, Usdata;
+				// 接收到消息的回调方法
+				// 这里的处理方式是，后端 WS 在当前信道上广播消息，若前端的 websocket 连接仍保持，就可以接收到这个 event 事件
+				websocket.onmessage = function(event) {
+					console.log(event);
+					setMessageInnerHTML("<strong>Feedback</strong><br>" + event.data);
+				}
+
+				//连接关闭的回调方法
+				websocket.onclose = function() {
+					setMessageInnerHTML("WebSocket 连接关闭");
+				}
+
+				//监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+				window.onbeforeunload = function() {
+					closeWebSocket();
+				}
+
+				//将消息显示在网页上
+				function setMessageInnerHTML(innerHTML) {
+					document.getElementById('message').innerHTML += innerHTML + '<br/><br/>';
+				}
+
+				//关闭WebSocket连接
+				function closeWebSocket() {
+					websocket.close();
+				}
+
+				//发送消息
+				function send() {
+					let message = "key generate";
+					setMessageInnerHTML("<strong>"+user+"</strong><br>" + message)
+					websocket.send(message);
+					document.getElementById("text").value = "";
+					// setMessageInnerHTML(message + "&#13;");
+				}
+			</script>
+	</body>
+</html>

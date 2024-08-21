@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<!--
+	Dimension by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Key Generate Tester</title>
+		<link rel="shortcut icon" href="/images/logo.ico">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="/assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="/assets/css/noscript.css" /></noscript>
+		<script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+	</head>
+	<body class="is-preload">
+			<div id="wrapper">
+				<header id="header">
+					<div style="text-align: left; background-color: black; position: relative; opacity: 0.7; padding: 40px; border-radius: 21px">
+						<div style="width: 100%; height: 40px">
+							<a th:href="@{/}" style="position: absolute; right: 4.5%; top: 2%; font-size: 32px">X</a>
+						</div>
+						<h2 class="major"><strong>密钥生成</strong></h2>
+
+						<blockquote>
+						一个测试接口，发送请求后服务器将调用本地的C程序生成密钥（通过本地执行./test的方式）
+						</blockquote>
+						<div id="message"></div><br>
+						<section>
+							<div class="fields">
+								<div class="field">
+									<label>Message</label>
+								</div>
+							</div><br>
+							<ul class="actions">
+								<li><button onclick="generate()" class="primary">Generate</button></li>
+								<li><button onclick="clean()">Clean</button></li>
+							</ul>
+						</section>
+					</div>
+				</header>
+
+				<!-- Footer -->
+				<footer id="footer">
+					<p class="copyright">&copy; Designed by: <a href="https://github.com/Northboat">NorthBoat</a><br>
+				</footer>
+
+			</div>
+
+			<!-- BG -->
+			<img id="bg" style="opacity: 0.7;" src="/images/manjaro.png" alt="#">
+
+			<!-- Scripts -->
+			<script src="/assets/js/jquery.min.js"></script>
+			<script src="/assets/js/browser.min.js"></script>
+			<script src="/assets/js/breakpoints.min.js"></script>
+			<script src="/assets/js/util.js"></script>
+			<script src="/assets/js/main.js"></script>
+
+			<script>
+				function generate(){
+					$.ajax({
+						url: "/getKey", /*数据提交到/loginIn处*/
+						type: "POST",  /*采用POST方法提交*/
+						data: null,
+						dataType: 'JSON',
+						cache: false,
+						success: function (result){
+							if(result.code == 200){
+								console.log(result.data)
+								for(let key in result.data){
+									setMessageInnerHTML(key + ": " + result.data[key]);
+								}
+							} else if(result.code == 500) {
+								alert(result.message);
+							}
+						}
+
+					});
+				}
+
+				function clean(){
+					document.getElementById('message').innerHTML = "";
+				}
+
+
+				//将消息显示在网页上
+				function setMessageInnerHTML(innerHTML) {
+					document.getElementById('message').innerHTML += innerHTML + '<br/><br/>';
+				}
+
+			</script>
+	</body>
+</html>
