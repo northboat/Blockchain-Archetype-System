@@ -1,4 +1,6 @@
-# XDU-Emulation
-你电的算法仿真
+# 你电的打工合集
+一些玩具代码
 
-- searchable-encryption-emulation：模拟仿真 BM25 / BM25L 算法的可搜索加密，包括循环群上的公钥加密和身份双向认证、AES 加密、关键词提取、VFE-Plus 编码
+- Searchable-Encryption：可搜索加密仿真
+- SM2-Bank：国密网银系统
+- Blockchain-Archetype：区块链原型系统
