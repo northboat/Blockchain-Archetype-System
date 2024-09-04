@@ -1,7 +1,0 @@
-spring:
-  profiles:
-    active: "dev"
-
-mybatis:
-  mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.xidian.bankdemo.entity
